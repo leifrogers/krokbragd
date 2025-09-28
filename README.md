@@ -6,7 +6,7 @@ A browser-based studio for designing Krokbragd weaving drafts, exploring colorwa
 
 ## Live Demo
 
-A live demo is available at [leifrogers.github.io/loom/](https://leifrogers.github.io/krokbragd/).
+A live demo is available at [leifrogers.github.io/krokbragd/](https://leifrogers.github.io/krokbragd/).
 
 ![Screenshot of the Krokbragd Weaving Simulator interface](./Krokbragd%20Weaving%20Simulator.png)
 
