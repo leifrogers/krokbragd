@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krokbragd Weaving Simulator</title>
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <script src="libraries/jspdf.umd.min.js"></script>
+  <script src="libraries/p5.min.js"></script>
+  <script src="sketch.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header" role="banner">
+      <h1>Krokbragd Weaving Simulator</h1>
+
+      <div class="dark-mode-toggle-container">
+        <div class="tool-group">
+          <div class="toggle-container">
+            <label class="toggle-label" for="dark-mode-toggle">Dark Mode</label>
+            <div class="toggle" id="dark-mode-toggle" role="switch" title="Dark mode toggle" aria-checked="false"
+              tabindex="0"></div>
+          </div>
+          <div class="toggle-container">
+            <label class="toggle-label" for="grid-toggle">Grid</label>
+            <div class="toggle active" id="grid-toggle" role="switch" title="Grid toggle" aria-checked="true"
+              tabindex="0">
+            </div>
+
+          </div>
+          <button class="icon-button" id="help-button" title="Help & Tutorial">
+            <svg class="feather">
+              <use href="libraries/feather-sprite.svg#help-circle" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main role="main">
+      <div class="main-content">
+        <div class="tools-area">
+          <div id="main-toolbar" aria-label="Main toolbar">
+            <!-- File Operations -->
+            <div class="tool-group">
+              <button class="icon-button" id="new-project" title="New Project">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#file-plus" />
+                </svg>
+              </button>
+              <button class="icon-button" id="import-pattern" title="Import Pattern">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#upload" />
+                </svg>
+              </button>
+              <button class="icon-button" id="save-pattern" title="Save Pattern">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#save" />
+                </svg>
+              </button>
+              <button class="icon-button" id="save-png" title="Save PNG">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#image" />
+                </svg>
+              </button>
+              <button class="icon-button" id="export-pdf" title="Export PDF">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#file-text" />
+                </svg>
+              </button>
+
+            </div>
+            <!-- Pattern Size Controls -->
+            <div class="tool-group">
+              <label class="tool-group-label" for="pattern-width">Pattern Size:</label>
+              <input type="number" id="pattern-width" min="5" max="100" value="30" aria-label="Pattern width">
+              <span>×</span>
+              <input type="number" id="pattern-height" min="5" max="100" value="20" aria-label="Pattern height">
+            </div>
+            <div class="tool-group">
+              <!-- Zoom Controls -->
+              <button class="icon-button" id="zoom-in" title="Zoom In">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#zoom-in" />
+                </svg>
+              </button>
+              <button class="icon-button" id="zoom-out" title="Zoom Out">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#zoom-out" />
+                </svg>
+              </button>
+              <button class="icon-button" id="reset-view" title="Reset View">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#refresh-cw" />
+                </svg>
+              </button>
+              <!-- Edit Operations -->
+              <button class="icon-button" id="undo" title="Undo">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#arrow-left" />
+                </svg>
+              </button>
+              <button class="icon-button" id="redo" title="Redo">
+                <svg class="feather">
+                  <use href="libraries/feather-sprite.svg#arrow-right" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="color-control-area">
+            <div id="current-color-section">
+              <h3>Current Color</h3>
+              <div id="working-color-container">
+                <!-- Working color control will be added here -->
+              </div>
+            </div>
+            <div id="working-colors-section">
+              <div class="working-colors-controls">
+                <h3>Working Colors</h3>
+
+                <button class="icon-button" id="add-working-color" title="Add current color to working colors"><svg
+                    class="feather">
+                    <use href="libraries/feather-sprite.svg#plus" />
+                  </svg></button>
+                <button class="icon-button" id="export-working-colors" title="Export working colors as a palette"><svg
+                    class="feather">
+                    <use href="libraries/feather-sprite.svg#download" />
+                  </svg></button>
+              </div>
+              <div id="working-colors-container">
+                <!-- Working color swatches will be added here -->
+              </div>
+            </div>
+            <div id="recent-colors-section">
+              <h3>Recently Used</h3>
+              <div id="recent-colors-container">
+                <!-- Recently used colors will be added here -->
+              </div>
+            </div>
+          </div>
+          <div class="palette-container">
+            <div class="palette-controls">
+              <h3>Palettes</h3>
+
+              <select id="palette-select" title="Select Palette"></select>
+              <div class="palette-actions">
+                <button class="icon-button" id="send-to-working" title="Import Palettes"><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#upload" />
+                  </svg></button>
+              </div>
+            </div>
+            <div class="palette-swatches" id="palette-swatches">
+              <!-- Palette swatches will be added here -->
+            </div>
+          </div>
+        </div>
+        <div class="working-area">
+          <div class="canvas-area">
+            <div id="canvas-container">
+              <!-- p5.js canvas will be inserted here -->
+            </div>
+          </div>
+          <div class="controls-area">
+            <h3>Row Color Pickers</h3>
+            <div id="row-color-pickers">
+              <!-- Row-specific color pickers will be added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </main>
+
+  <!-- Help Modal -->
+  <div id="help-modal" class="modal" role="dialog" aria-labelledby="help-modal-title" aria-hidden="true">
+    <div class="modal-overlay" aria-hidden="true"></div>
+    <div class="modal-content" role="document">
+      <div class="modal-header">
+        <h2 id="help-modal-title">Krokbragd Weaving Simulator - Help & Tutorial</h2>
+        <button class="modal-close" id="help-modal-close" title="Close Help" aria-label="Close Help Modal">
+          <svg class="feather">
+            <use href="libraries/feather-sprite.svg#x" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <nav class="help-nav" role="tablist">
+          <button class="help-tab active" role="tab" aria-selected="true" aria-controls="help-getting-started"
+            id="tab-getting-started">Getting Started</button>
+          <button class="help-tab" role="tab" aria-selected="false" aria-controls="help-interface"
+            id="tab-interface">Interface Guide</button>
+          <button class="help-tab" role="tab" aria-selected="false" aria-controls="help-colors" id="tab-colors">Colors &
+            Palettes</button>
+          <button class="help-tab" role="tab" aria-selected="false" aria-controls="help-patterns"
+            id="tab-patterns">Pattern Creation</button>
+          <button class="help-tab" role="tab" aria-selected="false" aria-controls="help-files" id="tab-files">File
+            Operations</button>
+          <button class="help-tab" role="tab" aria-selected="false" aria-controls="help-krokbragd"
+            id="tab-krokbragd">About Krokbragd</button>
+        </nav>
+
+        <div class="help-content">
+          <!-- Getting Started Tab -->
+          <div class="help-panel active" role="tabpanel" id="help-getting-started"
+            aria-labelledby="tab-getting-started">
+            <h3>Welcome to the Krokbragd Weaving Simulator!</h3>
+            <p>This simulator helps you design and visualize Krokbragd weaving patterns digitally before committing to
+              the loom.</p>
+
+            <h4>Quick Start:</h4>
+            <ol>
+              <li><strong>Set Pattern Size:</strong> Use the width × height inputs in the toolbar to set your pattern
+                dimensions (5-100 cells each direction)</li>
+              <li><strong>Choose Colors:</strong> Select colors from palettes or use the color picker to create your
+                working palette</li>
+              <li><strong>Design Your Pattern:</strong> Click on cells in the weaving grid to apply colors row by row
+              </li>
+              <li><strong>Use Row Controls:</strong> Each row has its own color picker for quick color assignment</li>
+              <li><strong>Save Your Work:</strong> Export as PNG image, save as pattern file, or generate PDF
+                documentation</li>
+            </ol>
+          </div>
+
+          <!-- Interface Guide Tab -->
+          <div class="help-panel" role="tabpanel" id="help-interface" aria-labelledby="tab-interface">
+            <h3>Interface Overview</h3>
+
+            <h4>Main Toolbar:</h4>
+            <ul>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#file-plus" />
+                  </svg> New Project:</strong> Clear the current pattern and start fresh</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#upload" />
+                  </svg> Import Pattern:</strong> Load a previously saved pattern file</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#save" />
+                  </svg> Save Pattern:</strong> Save your current pattern as a JSON file</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#image" />
+                  </svg> Save PNG:</strong> Export the current pattern as a PNG image</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#file-text" />
+                  </svg> Export PDF:</strong> Generate a comprehensive PDF with pattern and color information</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#zoom-in" />
+                  </svg> Zoom In/Out:</strong> Adjust the viewing scale of your pattern</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#refresh-cw" />
+                  </svg> Reset View:</strong> Return to default zoom and position</li>
+              <li><strong><svg class="feather">
+                    <use href="libraries/feather-sprite.svg#corner-up-left" />
+                  </svg>
+                  <svg class="feather">
+                    <use href="libraries/feather-sprite.svg#corner-up-right" />
+                  </svg> Undo/Redo:</strong> Navigate through your editing history</li>
+            </ul>
+
+            <h4>Pattern Controls:</h4>
+            <ul>
+              <li><strong>Pattern Size:</strong> Set width and height (5-100 cells each)</li>
+              <li><strong>Grid Toggle:</strong> Show/hide the grid overlay for cleaner viewing</li>
+              <li><strong>Dark Mode Toggle:</strong> Switch between light and dark themes</li>
+            </ul>
+
+            <h4>Navigation:</h4>
+            <ul>
+              <li><strong>Pan:</strong> Click and drag the pattern to move it around</li>
+              <li><strong>Zoom:</strong> Use zoom controls or mouse wheel (if available)</li>
+              <li><strong>Click to Edit:</strong> Click any cell to apply the current working color</li>
+            </ul>
+          </div>
+
+          <!-- Colors & Palettes Tab -->
+          <div class="help-panel" role="tabpanel" id="help-colors" aria-labelledby="tab-colors">
+            <h3>Color Management</h3>
+
+            <h4>Current Color:</h4>
+            <p>The large color picker at the top sets your current working color. This is the color that will be applied
+              when you click on pattern cells.</p>
+
+            <h4>Working Colors:</h4>
+            <ul>
+              <li><strong>Add Colors:</strong> Click the + button to add your current color to the working palette</li>
+              <li><strong>Quick Access:</strong> Click any working color to make it your current color</li>
+              <li><strong>Export Palette:</strong> Save your working colors as a custom palette file</li>
+              <li><strong>Remove Colors:</strong> Right-click on working colors to remove them</li>
+            </ul>
+
+            <h4>Color Palettes:</h4>
+            <ul>
+              <li><strong>Built-in Palettes:</strong> Choose from pre-loaded traditional and modern color schemes</li>
+              <li><strong>Import to Working:</strong> Use the import button to add all palette colors to your working
+                colors</li>
+              <li><strong>Custom Palettes:</strong> Import your own palette files or create them by exporting working
+                colors</li>
+            </ul>
+
+            <h4>Recently Used:</h4>
+            <p>The simulator automatically tracks your recently used colors for quick access to frequently used shades.
+            </p>
+
+            <h4>Row Color Pickers:</h4>
+            <p>Each row in your pattern has its own color picker on the right side, allowing you to quickly assign
+              colors to entire rows or see which colors are being used where.</p>
+
+          </div>
+
+          <!-- Pattern Creation Tab -->
+          <div class="help-panel" role="tabpanel" id="help-patterns" aria-labelledby="tab-patterns">
+            <h3>Creating Krokbragd Patterns</h3>
+            <h4>Coming Soon</h4>
+          </div>
+
+          <!-- File Operations Tab -->
+          <div class="help-panel" role="tabpanel" id="help-files" aria-labelledby="tab-files">
+            <h3>Saving and Loading</h3>
+
+            <h4>Pattern Files (.json):</h4>
+            <ul>
+              <li><strong>Save Pattern:</strong> Saves complete pattern data including colors, dimensions, and metadata
+              </li>
+              <li><strong>Import Pattern:</strong> Load previously saved patterns to continue editing</li>
+              <li><strong>Version Compatibility:</strong> Pattern files maintain compatibility across simulator updates
+              </li>
+              <li><strong>Sharing:</strong> Pattern files are text-based and easy to share with other weavers</li>
+            </ul>
+
+            <h4>Image Export (.png):</h4>
+            <ul>
+              <li><strong>High Resolution:</strong> Exports at full pattern resolution for clear printing</li>
+              <li><strong>Grid Options:</strong> Choose to include or hide the grid in exported images</li>
+              <li><strong>Print Ready:</strong> Images are suitable for pattern references at the loom</li>
+            </ul>
+
+            <h4>PDF Documentation:</h4>
+            <ul>
+              <li><strong>Complete Records:</strong> Includes pattern image, color information, and metadata</li>
+              <li><strong>Color Codes:</strong> Shows exact color values for yarn matching</li>
+              <li><strong>Pattern Statistics:</strong> Threading information and color usage data</li>
+              <li><strong>Professional Format:</strong> Suitable for pattern libraries and documentation</li>
+            </ul>
+
+            <h4>Palette Files:</h4>
+            <ul>
+              <li><strong>Export Working Colors:</strong> Save your current working palette as a reusable file</li>
+              <li><strong>Import Custom Palettes:</strong> Load palette files created by you or other users</li>
+            </ul>
+
+          </div>
+
+          <!-- About Krokbragd Tab -->
+          <div class="help-panel" role="tabpanel" id="help-krokbragd" aria-labelledby="tab-krokbragd">
+            <h3>About Krokbragd Weaving</h3>
+
+            <h4>Coming Soon</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
