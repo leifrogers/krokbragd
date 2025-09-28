@@ -101,7 +101,6 @@ Please make sure to update tests as appropriate.
 - Large grids can impact rendering performance on low-power devices; reduce the width/height or disable the grid overlay to improve responsiveness.
 
 ## Resources
-- [Krokbragd Weaving Overview (Norwegian Textile Letter)](https://norwegiantextileletter.com/2020/05/04/what-is-krokbragd/)
 - [p5.js Reference](https://p5js.org/reference/)
 - [jsPDF Documentation](https://github.com/parallax/jsPDF)
 
